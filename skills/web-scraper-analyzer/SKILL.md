@@ -1,5 +1,5 @@
 ---
-name: web-scraper
+name: web-scraper-analyzer
 description: Analyze web pages and extract data using Playwright. Use when user provides a URL and wants to scrape/extract data from the website. Automatically triggers for requests like "scrape this URL", "extract data from website", "analyze page structure".
 argument-hint: "<URL> [data-extraction-requirements]"
 allowed-tools: mcp__playwright__browser_navigate mcp__playwright__browser_snapshot mcp__playwright__browser_run_code mcp__playwright__browser_evaluate mcp__playwright__browser_take_screenshot

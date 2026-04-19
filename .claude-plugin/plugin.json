@@ -1,0 +1,22 @@
+{
+  "name": "amlei-skills",
+  "version": "1.0.0",
+  "description": "Production-tested skills, agents, and commands for Claude Code — backend/frontend development, testing, code review, git workflow, and more. Bilingual (Chinese/English).",
+  "displayName": "Amlei Skills",
+  "author": {
+    "name": "amlei"
+  },
+  "keywords": [
+    "skills",
+    "agents",
+    "backend",
+    "frontend",
+    "testing",
+    "code-review",
+    "documentation",
+    "git",
+    "bilingual"
+  ],
+  "category": "development",
+  "license": "MIT"
+}

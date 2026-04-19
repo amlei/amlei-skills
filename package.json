@@ -1,0 +1,27 @@
+{
+  "name": "amlei-skills",
+  "version": "1.0.0",
+  "description": "Production-tested skills, agents, and commands for Claude Code — backend/frontend, testing, git workflow, and more.",
+  "main": ".claude-plugin/plugin.json",
+  "files": [
+    ".claude-plugin/",
+    "skills/",
+    "agents/",
+    "commands/",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "claude-code",
+    "claude-code-plugin",
+    "skills",
+    "agents",
+    "commands"
+  ],
+  "author": "amlei",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amlei/amlei-skills.git"
+  }
+}
