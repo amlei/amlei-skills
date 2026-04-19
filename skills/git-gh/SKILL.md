@@ -104,14 +104,47 @@ After a successful commit + push on a **non-main branch**, ask the user:
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 ```
 
-5. Present to user for approval
+5. Present to user for approval — include suggested labels, assignees, reviewers
 6. Push with `-u` if needed, then create via `gh pr create`
 7. Return the PR URL
+
+### PR Metadata
+
+When creating a PR, suggest and apply labels, assignees, and reviewers:
+
+| Parameter | Flag | Example |
+|-----------|------|---------|
+| Labels | `--label` | `--label "enhancement,backend"` |
+| Assignees | `--assignee` | `--assignee "user1,user2"` |
+| Reviewers | `--reviewer` | `--reviewer "user1"` |
+| Milestone | `--milestone` | `--milestone "v2.0"` |
+| Project | `--project` | `--project "Roadmap"` |
+
+**How to suggest metadata:**
+- **Labels**: infer from change type (`feat` → `enhancement`, `fix` → `bug`, `docs` → `documentation`)
+- **Assignees**: default to the current user (`@me`) unless the user specifies others
+- **Reviewers**: ask the user who should review
+
+**When presenting the PR for approval**, include the metadata:
+```
+Title: feat: add user login
+Labels: enhancement
+Assignees: @me
+Reviewers: (ask user)
+```
+
+**To update an existing PR's metadata:**
+```bash
+gh pr edit <number> --add-label "enhancement" --add-assignee "username"
+```
 
 ### gh pr create Template
 
 ```bash
-gh pr create --title "the title" --body "$(cat <<'EOF'
+gh pr create --title "the title" \
+  --label "enhancement" \
+  --assignee "@me" \
+  --body "$(cat <<'EOF'
 ## Summary
 <bullets>
 
@@ -132,7 +165,8 @@ EOF
 | Commit | `git commit -m "msg"` |
 | Push (new branch) | `git push -u origin <branch>` |
 | Push (existing) | `git push` |
-| Create PR | `gh pr create --title "..." --body "..."` |
+| Create PR | `gh pr create --title "..." --body "..." --label "..." --assignee "..."` |
+| Edit PR metadata | `gh pr edit <n> --add-label "..." --add-assignee "..."` |
 | Check existing PRs | `gh pr list` |
 | View PR | `gh pr view <number>` |
 
