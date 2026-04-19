@@ -5,7 +5,8 @@
   "main": ".claude-plugin/plugin.json",
   "files": [
     ".claude-plugin/",
-    "skills/",
+    "skills/git-gh/",
+    "skills/skill-creation/",
     "agents/",
     "commands/",
     "README.md",
