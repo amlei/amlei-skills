@@ -30,140 +30,46 @@ agent: general-purpose
 
 Fetch and extract content from URLs using web tools.
 
-## Usage
-
-```bash
-# Basic usage
-/web-scraper https://example.com
-
-# With description of what to extract
-/web-scraper https://example.com Extract all article titles and links
-
-# Save to specific file
-/web-scraper https://example.com Save content to output/article.md
-```
-
-## Available Tools
-
-### 1. Web Reader (MCP)
-Extract readable content from web pages.
-
-```bash
-# Basic fetch
-webReader url="https://example.com"
-
-# With options
-webReader url="..." return_format="markdown" retain_images="true"
-```
-
-Options:
-- `return_format`: "markdown" (default) or "text"
-- `retain_images`: true/false (default: true)
-- `timeout`: request timeout in seconds (default: 20)
-- `no_cache`: disable cache (default: false)
-- `with_links_summary`: include links and images summary (default: false)
-
-### 2. Web Search
-Search the web for information.
-
-```bash
-WebSearch query="search terms"
-```
-
-### 3. Playwright CLI
-For JavaScript-heavy sites requiring browser automation.
-
-Invoke `/playwright-cli` skill or use:
-```bash
-# Open page
-playwright-cli open https://example.com
-
-# Get page content
-playwright-cli eval "document.body.innerText"
-
-# Screenshot
-playwright-cli screenshot --filename=screenshot.png
-```
-
 ## Workflow
 
 1. **Analyze Request**
    - Extract URL from arguments
    - Parse user's extraction requirements
 
-2. **Choose Tool**
-   - Static HTML: Use `webReader` (MCP tool)
-   - JS-heavy sites: Use `/playwright-cli` skill
-   - Web search: Use `WebSearch` (MCP tool)
+2. **Try Request First (webReader/requests)**
+   - Always attempt `webReader` MCP tool first
+   - If successful, continue using webReader for all subsequent URLs
+   - Faster and more efficient for static content
+   - Use `with_links_summary="true"` to extract all links including images
 
-3. **Fetch Content**
-   - Call MCP tools directly (webReader, WebSearch)
-   - Or invoke /playwright-cli skill for JS-heavy sites
-   - Handle errors gracefully
+3. **Fallback to Playwright (Only if Request Fails)**
+   - Only use `/playwright-cli` skill when:
+     - webReader fails (timeout, blocked, JS rendering required)
+     - Complex user interactions needed (clicks, form fills, pagination)
+   - Once Playwright is used, continue with Playwright for consistency
 
 4. **Process & Save**
    - Format output as requested
    - Save to file using Write tool
    - Report results to user
 
-## Example Patterns
-
-### Extract Article Content
-```markdown
-User: /web-scraper https://blog.example.com/article Extract main article
-
-Steps:
-1. Use webReader url="..." return_format="markdown"
-2. Parse returned markdown for article content
-3. Save clean article text to article.md
-```
-
-### Get All Links (including images)
-```markdown
-User: /web-scraper https://example.com Get all links
-
-Steps:
-1. Use webReader url="..." with_links_summary="true"
-2. Extract links and image URLs from response
-3. Save to links.json
-```
-
-### Screenshot Page
-```markdown
-User: /web-scraper https://example.com Take screenshot
-
-Steps:
-1. Invoke /playwright-cli skill with URL
-2. Take screenshot
-3. Report screenshot location
-```
-
-### Search and Extract
-```markdown
-User: /web-scraper Search for "AI news" and extract top 5 results
-
-Steps:
-1. Use WebSearch query="AI news"
-2. Parse search results
-3. For each result, use webReader url="..." to fetch content
-4. Compile and save to summary.md
-```
-
 ## Error Handling
 
-- Invalid URL: Report error and ask for valid URL
-- Timeout: Suggest increasing timeout or trying /playwright-cli
-- Blocked by anti-scraping: Suggest using /playwright-cli skill
-- MCP tool unavailable: Fall back to /playwright-cli or WebSearch
+- **Invalid URL**: Report error and ask for valid URL
+- **webReader timeout/failure**: Automatically fallback to /playwright-cli skill
+- **Blocked by anti-scraping**: Use /playwright-cli skill with browser automation
+- **MCP tool unavailable**: Fall back to /playwright-cli or Bash with curl
+- **Progressive fallback**: Always try webReader first, only switch to Playwright if it fails
 
 ## Best Practices
 
-1. **Prefer webReader MCP tool** for static content - faster and cleaner
-2. **Use /playwright-cli skill** for JS-heavy sites or complex interactions
-3. **Always validate URLs** before fetching
-4. **Save large outputs** to files, don't print to console
-5. **Report progress** for multi-step operations
-6. **Handle errors** gracefully with clear messages
+1. **Always try webReader first** - fastest and most efficient for static content
+2. **Stick with one method** - if webReader works, use it for all URLs; if you switch to Playwright, continue with Playwright
+3. **Only use Playwright when necessary** - JS rendering, complex interactions, or when webReader fails
+4. **Always validate URLs** before fetching
+5. **Save large outputs** to files, don't print to console
+6. **Report progress** for multi-step operations
+7. **Handle errors** with graceful fallback to Playwright
 
 ## Troubleshooting
 
@@ -177,3 +83,9 @@ sleep 2  # Wait 2 seconds between requests
 ```
 
 **Content blocked**: Try Playwright with different user-agent or use playwright-cli state to handle cookies.
+
+**Progressive Strategy**: Remember the workflow:
+1. Always try webReader first
+2. If it works, stick with webReader for all subsequent URLs
+3. Only switch to Playwright if webReader fails
+4. Once switched to Playwright, continue with Playwright

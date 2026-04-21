@@ -8,6 +8,22 @@ disable-model-invocation: true
 
 Use `gh` CLI (GitHub) for all remote operations. Commit and push directly without confirmation. Only PR requires explicit user approval.
 
+## ⚠️ CRITICAL CONSTRAINT
+
+**NEVER automatically commit and push after making edits.**
+
+This skill should ONLY activate when:
+- User explicitly asks: "commit", "push", "create PR", "提交", "推送"
+- User invokes: `/git-gh` command
+- User explicitly requests git operations
+
+**DO NOT:**
+- Auto-commit after editing files
+- Suggest committing after each change
+- Be proactive about git operations
+
+**WAIT for the user to initiate.**
+
 ## 1. Commit
 
 ### Before Committing
