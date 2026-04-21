@@ -14,14 +14,14 @@ claude plugin install /path/to/amlei-skills
 
 After install, reload plugins: `/reload-plugins`
 
-## Skills (12)
+## Skills (14)
 
 Invoke as `/amlei-skills:<name>` or let Claude auto-activate based on context.
 
 | Skill | Invocation | Description |
 |-------|-----------|-------------|
 | **git-gh** | `/amlei-skills:git-gh` | Git commit/push/PR workflow using gh CLI |
-| **resume** | `/amlei-skills:resume` | STAR-based resume writing assistant |
+| **resume** | `/amlei-skills:resume` | STAR-based resume writing assistant (Chinese) |
 | **skill-creation** | `/amlei-skills:skill-creation` | Create Claude Code skills (official standard) |
 | **skill-developer** | `/amlei-skills:skill-developer` | Advanced skill development guide |
 | **backend-dev-guidelines** | `/amlei-skills:backend-dev-guidelines` | Node.js/Express/TypeScript patterns |
@@ -31,7 +31,8 @@ Invoke as `/amlei-skills:<name>` or let Claude auto-activate based on context.
 | **dev-docs-reader** | `/amlei-skills:dev-docs-reader` | Documentation lookup (CN/EN) |
 | **d_system_analyse** | `/amlei-skills:d_system_analyse` | Senior system code analyst (CN/EN) |
 | **webapp-testing** | `/amlei-skills:webapp-testing` | Web application testing toolkit |
-| **web-scraper-analyzer** | `/amlei-skills:web-scraper-analyzer` | Web scraping with Playwright |
+| **web-scraper** | `/amlei-skills:web-scraper` | Web scraping with Playwright & MCP tools |
+| **playwright-cli** | `/amlei-skills:playwright-cli` | Playwright CLI quick reference (CN/EN) |
 
 ## Agents (10)
 
@@ -69,6 +70,8 @@ Agents are available automatically when the plugin is enabled.
 | Setup error tracking | `/amlei-skills:error-tracking` |
 | Test API routes | `/amlei-skills:route-tester` |
 | Understand a codebase | `/amlei-skills:d_system_analyse` |
+| Scrape web content | `/amlei-skills:web-scraper` |
+| Use Playwright CLI | `/amlei-skills:playwright-cli` |
 | Refactor code | `code-refactor-master` agent |
 | Review architecture | `code-architecture-reviewer` agent |
 

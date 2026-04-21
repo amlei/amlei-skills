@@ -4,15 +4,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Purpose
 
-This is a **collection of Claude Code extensions** - a showcase/library of custom skills, agents, hooks, and commands for Claude Code. It is NOT a traditional software project with build artifacts or a deployed application.
+This is a **npm-published Claude Code plugin** - a collection of production-tested skills, agents, hooks, and commands. It is distributed as `amlei-skills` and can be installed via `claude plugin install npm:amlei-skills`.
 
 **What this contains:**
-- **Skills** (8): Domain-specific guidelines that auto-activate based on context
+- **Skills** (14): Domain-specific guidelines with bilingual support (Chinese/English)
 - **Agents** (10): Autonomous specialists for complex multi-step tasks
-- **Hooks** (7): Shell/TypeScript scripts that run at specific Claude workflow points
-- **Commands** (1): Custom slash command for route testing
+- **Hooks** (7): Shell/TypeScript scripts for automation
+- **Commands** (2): Custom slash commands
 
-**Key insight:** All components are designed to be copied to other projects. They work standalone or in combination.
+**Key insight:** This is both a working plugin AND a reference library. Components can be used via the plugin OR copied to other projects for customization.
 
 ---
 
@@ -20,18 +20,62 @@ This is a **collection of Claude Code extensions** - a showcase/library of custo
 
 ```
 amlei-skills/
-├── agents/           # Standalone agent definitions (.md files)
-├── commands/         # Custom slash commands (.md files)
-├── hooks/            # Shell scripts and TypeScript for automation
-├── skills/           # Domain-specific skill directories with resources/
-└── skills/skill-rules.json  # Central configuration for skill activation
+├── .claude-plugin/     # Plugin metadata (plugin.json)
+├── agents/             # Standalone agent definitions (.md files)
+├── commands/           # Custom slash commands (.md files)
+├── hooks/              # Shell scripts and TypeScript for automation
+├── skills/             # Domain-specific skill directories with resources/
+│   ├── skill-rules.json  # Central config for skill activation (reference)
+│   └── [skill-name]/    # Individual skill directories
+└── package.json        # npm package manifest
 ```
 
 ### Key Files
 
-- **`skills/skill-rules.json`**: Central configuration controlling when skills auto-activate via keywords, intent patterns, file paths, and content patterns
-- **`hooks/skill-activation-prompt.ts`**: TypeScript script that reads skill-rules.json and injects skill suggestions into Claude's context
+- **`package.json`**: npm package definition - controls which skills/agents are published
+- **`.claude-plugin/plugin.json`**: Plugin metadata for Claude Code
+- **`docs/skill-rules.json`**: Reference configuration for skill activation patterns
+- **`hooks/skill-activation-prompt.ts`**: TypeScript script that reads skill-rules.json and injects skill suggestions
 - **`hooks/post-tool-use-tracker.sh`**: Tracks file changes across sessions to maintain context
+
+---
+
+## Plugin Development Workflow
+
+When developing this plugin itself:
+
+### Local Testing
+
+```bash
+# Test locally from plugin directory
+claude --plugin-dir .
+
+# Reload after changes (in Claude Code session)
+/reload-plugins
+```
+
+### Publishing
+
+1. Update version in `package.json`
+2. Ensure `package.json` files array includes all skills to publish
+3. Run `npm publish`
+4. Users install via: `claude plugin install npm:amlei-skills`
+
+### Adding a New Skill
+
+1. Create directory: `skills/your-skill/`
+2. Create `SKILL.md` with YAML frontmatter (name, description, triggers)
+3. Add `resources/` subdirectory for detailed guides (if needed)
+4. Add skill directory to `package.json` files array
+5. Test locally with `--plugin-dir .`
+6. For activation patterns: Document in skill's SKILL.md (plugin uses frontmatter triggers)
+
+### Modifying Skills/Agents/Commands
+
+1. Read the relevant `SKILL.md` or `.md` file
+2. Update content as needed
+3. Reload plugins: `/reload-plugins`
+4. Test the changes
 
 ---
 
@@ -46,104 +90,99 @@ This repository contains **documentation and configuration only**, not executabl
 - Applications to start
 
 **Instead, the workflow is:**
-1. Copy agents/skills/hooks/commands to target projects
-2. Customize path patterns in skill-rules.json
-3. Configure hooks in target project's `.claude/settings.json`
-4. Use the extensions during development
-
----
-
-## Architecture: Two-Hook Skill Activation System
-
-Skills auto-activate through a sophisticated hook-based system:
-
-### 1. UserPromptSubmit Hook (`skill-activation-prompt.ts`)
-- **Runs:** BEFORE Claude sees user's prompt
-- **Purpose:** Analyzes prompt + file context → suggests relevant skills
-- **Method:** Reads `skill-rules.json`, matches triggers, injects suggestions via stdout
-
-### 2. Stop Hook (`error-handling-reminder.ts`)
-- **Runs:** AFTER Claude finishes responding
-- **Purpose:** Gentle reminders for error handling self-assessment
-- **Method:** Analyzes edited files for risky patterns, displays reminder if needed
-
-**Philosophy (2025-10-27):** Moved from blocking PreToolUse to gentle reminders - maintains code quality awareness without workflow friction.
-
----
-
-## Skill Activation Configuration
-
-Skills activate via `skill-rules.json` using multiple trigger types:
-
-### Trigger Types
-1. **Keywords** - Simple word matching in user prompts
-2. **Intent Patterns** - Regex patterns matching user intent
-3. **File Path Patterns** - Glob patterns matching edited files
-4. **Content Patterns** - Regex patterns within file contents
-5. **Skip Conditions** - Session tracking, file markers, environment variables
-
-### Enforcement Levels
-- **`suggest`**: Skill appears as recommendation, doesn't block
-- **`block`**: Guardrail - must use skill before proceeding
-- **`warn`**: Shows warning but allows proceeding
-
-### Skill Types
-- **`domain`**: Comprehensive guidance for specific areas (backend, frontend)
-- **`guardrail`**: Enforces critical best practices to prevent errors
-
-### Priority Levels
-- **`critical`**: Always trigger when matched
-- **`high`**: Trigger for most matches
-- **`medium`**: Trigger for clear matches
-- **`low`**: Optional - trigger only for explicit matches
+1. Use components via plugin: `claude plugin install npm:amlei-skills`
+2. OR copy agents/skills/hooks/commands to target projects
+3. Customize path patterns if copying skills
+4. Configure hooks in target project's `.claude/settings.json`
 
 ---
 
 ## Available Skills
 
-### 1. **skill-developer** (Meta-skill)
+### Domain Skills
+
+#### 1. **skill-developer** (Meta-skill)
 **Purpose:** Creating and managing Claude Code skills
-**Use when:** Creating skills, modifying skill-rules.json, debugging activation
+**Use when:** Creating skills, modifying skill frontmatter, debugging activation
 **Enforcement:** suggest | priority: high
 
-### 2. **backend-dev-guidelines**
+#### 2. **skill-creation** (Meta-skill)
+**Purpose:** Guide for creating Claude Code skills following official standards
+**Use when:** Creating new skills, writing SKILL.md files, configuring frontmatter
+**Enforcement:** suggest | priority: high
+
+#### 3. **backend-dev-guidelines**
 **Purpose:** Node.js/Express/TypeScript patterns
 **Covers:** Layered architecture, BaseController, Prisma, Sentry, Zod validation
 **Enforcement:** suggest | priority: high
 **Customization:** ⚠️ Update `pathPatterns` for backend directories
 
-### 3. **frontend-dev-guidelines**
+#### 4. **frontend-dev-guidelines**
 **Purpose:** React/TypeScript/MUI v7 patterns
 **Covers:** Modern React, Suspense, TanStack Router, MUI v7 styling
 **Enforcement:** ⚠️ block (guardrail) | priority: high
 **Customization:** ⚠️ Update `pathPatterns` + verify React/MUI usage
 
-### 4. **route-tester**
+#### 5. **route-tester**
 **Purpose:** Testing authenticated API routes (JWT cookie-based auth)
 **Covers:** JWT cookie auth testing, cURL patterns, debugging
 **Enforcement:** suggest | priority: high
 **Customization:** ⚠️ Requires JWT cookie auth setup
 
-### 5. **error-tracking**
+#### 6. **error-tracking**
 **Purpose:** Sentry error tracking and monitoring
 **Covers:** Sentry v8, error capture, breadcrumbs, performance monitoring
 **Enforcement:** suggest | priority: high
 **Customization:** ⚠️ Update `pathPatterns` for backend
 
-### 6. **dev-docs-reader**
+#### 7. **dev-docs-reader**
 **Purpose:** Read accurate documentation for implementation questions
 **Language:** Bilingual (Chinese/English) trigger keywords
 **Enforcement:** suggest | priority: high
 
-### 7. **d_system_analyse**
+#### 8. **d_system_analyse**
 **Purpose:** Senior system analyst for code understanding
 **Language:** Bilingual (Chinese/English) trigger keywords
 **Enforcement:** suggest | priority: ⚠️ critical
 **Note:** Default behavior - search project before answering questions
 
-### 8. **webapp-testing**
+#### 9. **webapp-testing**
 **Purpose:** Web application testing patterns
-**Enforcement:** suggest | priority: (not specified in config)
+**Covers:** Playwright for testing web applications
+**Enforcement:** suggest | priority: medium
+
+### Utility Skills
+
+#### 10. **git-gh**
+**Purpose:** Git commit, push, and PR workflow using gh CLI
+**Covers:** Commit conventions, push strategies, PR creation with metadata
+**Usage:** `/amlei-skills:git-gh` or auto-activate on git operations
+**Enforcement:** suggest | priority: high
+
+#### 11. **resume**
+**Purpose:** STAR-based resume writing assistant
+**Language:** Chinese (for job application context)
+**Covers:** Work experience, project experience, professional skills
+**Usage:** `/amlei-skills:resume [目标岗位] [数据路径]`
+**Enforcement:** suggest | priority: medium
+
+#### 12. **web-scraper**
+**Purpose:** Web scraping with multiple tools
+**Covers:** Web reader MCP, Playwright CLI, web search, content extraction
+**Usage:** `/amlei-skills:web-scraper URL [description]`
+**Enforcement:** suggest | priority: high
+**Tools:** Bash, Read, Write, Glob, Grep, webReader, WebSearch
+
+#### 13. **playwright-cli**
+**Purpose:** Quick reference for Playwright CLI browser automation
+**Covers:** Browser automation, testing, element interaction, screenshots
+**Language:** Bilingual (Chinese/English)
+**Enforcement:** suggest | priority: medium
+
+#### 14. **skill-developer** (Advanced)
+**Purpose:** Advanced skill development patterns and debugging
+**Covers:** YAML frontmatter, trigger types, enforcement levels, hooks
+**Enforcement:** suggest | priority: high
 
 ---
 
@@ -176,100 +215,11 @@ All agents are **standalone** - just copy the `.md` file to use.
 
 ---
 
-## Available Hooks
-
-### Essential Hooks (Start Here)
-
-1. **skill-activation-prompt** (UserPromptSubmit)
-   - **Purpose:** Auto-suggest skills based on prompt + file context
-   - **Critical:** This is THE hook that enables skill auto-activation
-   - **Files:** `skill-activation-prompt.sh`, `skill-activation-prompt.ts`
-   - **Customization:** ✅ None - reads skill-rules.json automatically
-
-2. **post-tool-use-tracker** (PostToolUse)
-   - **Purpose:** Track file changes for context maintenance
-   - **Matcher:** Edit|MultiEdit|Write tools
-   - **Customization:** ✅ None - auto-detects project structure
-
-### Optional Hooks
-
-3. **error-handling-reminder** (Stop)
-   - **Purpose:** Gentle reminders for error handling self-assessment
-   - **Files:** `error-handling-reminder.sh`, `error-handling-reminder.ts`
-   - **Customization:** ✅ None needed
-
-4. **stop-build-check-enhanced** (Stop)
-   - **Purpose:** TypeScript compilation check when user stops
-   - **Customization:** ⚠️⚠️⚠️ Heavy - configured for multi-service monorepo
-
-5. **trigger-build-resolver** (Stop)
-   - **Purpose:** Auto-launch build-error-resolver agent on compilation failure
-   - **Depends on:** tsc-check hook working correctly
-
-### Hook Installation
-
-```bash
-# Copy hooks to target project
-cp -r hooks/* your-project/.claude/hooks/
-
-# Set execute permissions
-chmod +x your-project/.claude/hooks/*.sh
-
-# Install TypeScript dependencies
-cd your-project/.claude/hooks
-npm install
-
-# Compile TypeScript
-npx tsc
-```
-
-### Configure in target project's `.claude/settings.json`:
-
-```json
-{
-  "hooks": {
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/skill-activation-prompt.sh"
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Edit|MultiEdit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/post-tool-use-tracker.sh"
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/error-handling-reminder.sh"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
----
-
 ## Available Commands
 
 ### route-research-for-testing
 **Purpose:** Map edited routes & launch tests
-**Usage:** `/route-research [/extra/path …]`
+**Usage:** `/amlei-skills:route-research-for-testing [/extra/path …]`
 **Allowed tools:** Bash (cat, awk, grep, sort, xargs, sed)
 **Model:** sonnet
 
@@ -277,6 +227,10 @@ npx tsc
 1. Combines auto-detected route changes with user-specified paths
 2. Outputs JSON with route paths, methods, request/response shapes
 3. Launches auth-route-tester sub-agent for testing
+
+### d_system_analyse
+**Purpose:** System analysis command (alias for skill)
+**Usage:** `/amlei-skills:d_system_analyse`
 
 ---
 
@@ -287,8 +241,8 @@ When helping users integrate these components into their projects:
 ### For Skills
 1. Ask about project structure (monorepo vs single-app)
 2. Copy skill directory to `.claude/skills/`
-3. Update `pathPatterns` in `skill-rules.json` to match their paths
-4. Verify hooks are installed and working
+3. If the skill uses path triggers (like backend/frontend guidelines), customize paths in skill's SKILL.md or skill-rules.json
+4. Verify hooks are installed if using activation system
 5. Test activation by editing a relevant file
 
 ### For Agents
@@ -309,8 +263,8 @@ When helping users integrate these components into their projects:
 ### Common Mistakes to Avoid
 - ❌ Keeping example paths (`blog-api/`, `frontend/`, `auth-service/`)
 - ❌ Not asking about monorepo vs single-app structure
-- ❌ Copying `skill-rules.json` without customizing `pathPatterns`
-- ❌ Setting execute permissions on shell scripts (`chmod +x`)
+- ❌ Copying skill activation rules without customizing path patterns
+- ❌ Forgetting to set execute permissions on shell scripts (`chmod +x`)
 - ❌ Forgetting to `npm install` in hooks directory
 - ❌ Adding Stop hooks without testing them first
 
@@ -338,21 +292,27 @@ Hooks should auto-detect project structure:
 - Detect TypeScript config location
 - Fall back to sensible defaults
 
+### Bilingual Support
+Many components support both Chinese and English:
+- `d_system_analyse`: Bilingual trigger keywords for system analysis
+- `dev-docs-reader`: Bilingual trigger keywords for documentation queries
+- `resume`: Chinese-focused resume writing
+- `playwright-cli`: Bilingual documentation
+
 ---
 
 ## Important Notes
 
-### This is a Bilingual Repository
-Many components support both Chinese and English:
-- `d_system_analyse`: Bilingual trigger keywords for system analysis
-- `dev-docs-reader`: Bilingual trigger keywords for documentation queries
+### Plugin vs Standalone Use
+- **Plugin use**: Install via `claude plugin install npm:amlei-skills` - skills auto-activate via frontmatter triggers
+- **Standalone use**: Copy skills/agents to projects - may need to configure activation manually
 
-### Path Pattern Customization is Critical
-The example `pathPatterns` in `skill-rules.json` are for demonstration:
+### Path Pattern Customization
+When copying skills with file triggers to other projects:
 ```json
 "pathPatterns": [
-  "blog-api/src/**/*.ts",      // ← Example path
-  "frontend/src/**/*.tsx"      // ← Example path
+  "blog-api/src/**/*.ts",      // ← Example path - customize this!
+  "frontend/src/**/*.tsx"      // ← Example path - customize this!
 ]
 ```
 **Always** update these to match the target project structure.
@@ -381,47 +341,28 @@ color: cyan|blue|green|etc.
 ---
 ```
 
+### Skill Frontmatter
+Skills use YAML frontmatter for activation:
+```yaml
 ---
-
-## Development Workflow in This Repository
-
-When working on this repository itself:
-
-### Adding a New Skill
-1. Create directory: `skills/your-skill/`
-2. Create `SKILL.md` with YAML frontmatter
-3. Add `resources/` subdirectory for detailed guides
-4. Add entry to `skills/skill-rules.json`
-5. Test activation by editing a matching file
-
-### Modifying Existing Skills
-1. Read the skill's `SKILL.md` and `resources/*.md`
-2. Update content as needed
-3. Update `skill-rules.json` if changing triggers
-4. Document changes in the skill's README if present
-
-### Adding a New Agent
-1. Create `agents/your-agent.md`
-2. Include YAML frontmatter with name, description, model
-3. Provide clear step-by-step instructions
-4. Specify expected output format
-5. Add to `agents/README.md`
-
-### Modifying Hooks
-1. Update shell script or TypeScript source
-2. Test manually: `./hook-name.sh`
-3. Run TypeScript check: `cd hooks && npx tsc --noEmit`
-4. Update documentation in `hooks/README.md` and `hooks/CONFIG.md`
+name: skill-name
+description: What this skill does
+triggers:
+  keywords: [...]
+  intent: [...]
+type: domain|guardrail
+enforcement: suggest|block|warn
+priority: critical|high|medium|low
+---
+```
 
 ---
 
 ## Summary
 
-This repository is a **library of Claude Code extensions** - not a traditional software project. The workflow is:
+This repository is a **publishable Claude Code plugin** containing production-tested extensions. The dual workflow is:
 
-1. **Copy** agents/skills/hooks/commands to target projects
-2. **Customize** path patterns and configurations
-3. **Configure** in `.claude/settings.json`
-4. **Use** during development for enhanced capabilities
+1. **Plugin use**: Install via npm - skills auto-activate based on frontmatter triggers
+2. **Copy to projects**: Customize and integrate skills/agents/hooks into target projects
 
-**Key architectural insight:** The two-hook system (UserPromptSubmit + Stop) enables sophisticated skill auto-activation while maintaining a smooth developer experience through gentle reminders rather than blocking friction.
+**Key architectural insight:** Skills use frontmatter for activation (plugin) OR skill-rules.json (standalone integration). The two-hook system (UserPromptSubmit + Stop) enables sophisticated skill auto-activation while maintaining a smooth developer experience through gentle reminders rather than blocking friction.
