@@ -20,7 +20,7 @@ triggers:
 type: domain
 enforcement: suggest
 priority: high
-allowed-tools: Bash Read Write Glob Grep
+allowed-tools: Bash Read Write Glob Grep webReader WebSearch
 argument-hint: "[URL] [description]"
 context: fork
 agent: general-purpose
@@ -50,10 +50,10 @@ Extract readable content from web pages.
 
 ```bash
 # Basic fetch
-mcp__web_reader__webReader url="https://example.com"
+webReader url="https://example.com"
 
 # With options
-mcp__web_reader__webReader url="..." return_format="markdown" retain_images="true"
+webReader url="..." return_format="markdown" retain_images="true"
 ```
 
 Options:
@@ -92,12 +92,13 @@ playwright-cli screenshot --filename=screenshot.png
    - Parse user's extraction requirements
 
 2. **Choose Tool**
-   - Static HTML: Use `mcp__web_reader__webReader`
+   - Static HTML: Use `webReader` (MCP tool)
    - JS-heavy sites: Use `/playwright-cli` skill
-   - Web search: Use `WebSearch`
+   - Web search: Use `WebSearch` (MCP tool)
 
 3. **Fetch Content**
-   - Call appropriate web tool
+   - Call MCP tools directly (webReader, WebSearch)
+   - Or invoke /playwright-cli skill for JS-heavy sites
    - Handle errors gracefully
 
 4. **Process & Save**
@@ -112,7 +113,7 @@ playwright-cli screenshot --filename=screenshot.png
 User: /web-scraper https://blog.example.com/article Extract main article
 
 Steps:
-1. Use mcp__web_reader__webReader with return_format="markdown"
+1. Use webReader url="..." return_format="markdown"
 2. Parse returned markdown for article content
 3. Save clean article text to article.md
 ```
@@ -122,7 +123,7 @@ Steps:
 User: /web-scraper https://example.com Get all links
 
 Steps:
-1. Use mcp__web_reader__webReader with with_links_summary="true"
+1. Use webReader url="..." with_links_summary="true"
 2. Extract links and image URLs from response
 3. Save to links.json
 ```
@@ -144,7 +145,7 @@ User: /web-scraper Search for "AI news" and extract top 5 results
 Steps:
 1. Use WebSearch query="AI news"
 2. Parse search results
-3. For each result, use mcp__web_reader__webReader to fetch content
+3. For each result, use webReader url="..." to fetch content
 4. Compile and save to summary.md
 ```
 
@@ -157,7 +158,7 @@ Steps:
 
 ## Best Practices
 
-1. **Prefer MCP web_reader** for static content - faster and cleaner
+1. **Prefer webReader MCP tool** for static content - faster and cleaner
 2. **Use /playwright-cli skill** for JS-heavy sites or complex interactions
 3. **Always validate URLs** before fetching
 4. **Save large outputs** to files, don't print to console
@@ -166,7 +167,7 @@ Steps:
 
 ## Troubleshooting
 
-**Tool not available**: If MCP tools fail, fall back to:
+**Tool not available**: If MCP tools (webReader, WebSearch) fail, fall back to:
 - /playwright-cli skill for browser automation
 - Bash with curl for simple fetching
 
