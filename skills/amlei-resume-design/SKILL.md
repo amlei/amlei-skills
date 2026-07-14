@@ -10,15 +10,7 @@ argument-hint: "[目标岗位或主题] [简历.md 路径]"
 
 ## 工作流
 
-### 0. 输入归一化
-
-输入可以是简历 Markdown / `.md` 路径（直接进第 1 步）、`.docx`、`.pdf`、纯文本。**非 Markdown 输入先归一化成下面的「简历 MD 格式」再进第 1 步。** 没给就向用户索要，或用 `assets/sample-resume.md` 演示。
-
-- **DOCX**：`pandoc "简历.docx" -o 简历-raw.md`，再按「简历 MD 格式」（第 3 步）重排。
-- **PDF**：抽出全文文本，再同上重排、去噪（页眉页脚 / 水印 / 断行粘连）。
-- **纯文本 / 网页富文本**：按标题启发式推断结构，重排成简历 MD。
-
-范例：[sample-from-docx.md](assets/sample-from-docx.md)、[sample-from-pdf.md](assets/sample-from-pdf.md)。
+输入是一份「简历 MD 格式」（第 3 步）的 Markdown。
 
 ### 1. 选主题
 
