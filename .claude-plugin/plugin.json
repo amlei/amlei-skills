@@ -1,0 +1,16 @@
+{
+  "name": "amlei-skills",
+  "description": "简历全流程 + Boss直聘搜岗 + 故事生成 + Git 工作流",
+  "skills": [
+    {
+      "name": "amlei-resume",
+      "file-path": ".opencode/skills/amlei-resume/SKILL.md",
+      "description": "简历全流程：0→1 写/改/换岗/迭代 + Boss直聘搜岗 + 装配 HTML 导出 PDF"
+    },
+    {
+      "name": "amlei-story-generator",
+      "file-path": "skills/amlei-story-generator/SKILL.md",
+      "description": "故事生成——书/人/事/物/理/案，联网核实后写成引人入胜的长文"
+    },
+  ]
+}
