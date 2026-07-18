@@ -17,7 +17,7 @@ argument-hint: "[求职岗位] [意向城市] [工作年限]"
 
 ## 简历存储（项目级，直接读写）
 
-简历是普通 Markdown，持久化在项目级，**不进根目录、不用脚本**——直接 Read / Write：
+简历是普通 Markdown，持久化在项目级，**不进根目录、不用脚本**——直接读写该文件：
 
 ```
 resume/{姓名}/{求职岗位}/简历.md
@@ -47,28 +47,19 @@ resume/{姓名}/{求职岗位}/简历.md
 - 项目级：`<项目>/.amlei-skill/resume-gen/memory.json`
 - 根目录：`~/.amlei-skill/resume-gen/memory.json`
 
-```bash
-python3 scripts/memory.py path                              # 记忆在哪 / 是否存在
-python3 scripts/memory.py init --location project|root      # 首次创建（不覆盖）
-python3 scripts/memory.py time  [--key KEY]                 # 查最后更新时间（判过时）
-python3 scripts/memory.py find  [--key KEY] [--tag T] [--category hard|soft] [--type ability|project]
-python3 scripts/memory.py add   --type ability|project --key KEY --value "..." [--category] [--tags a,b] [--long-term] [--url URL] [--tech a,b] [--role R] [--outcome O]
-python3 scripts/memory.py update --type ability|project --key KEY --field <字段> --value "..."
-```
+全部命令见 `python3 scripts/memory.py --help`，每条 `<命令> --help` 看参数。
 
-**写简历前必须先有记忆**——`path` 查不到就问用户选项目级 / 根目录，`init` 创建后再引导补充；没有记忆硬性不往下走。
+**写简历前必须先有记忆**——`path` 查不到就问用户选项目级 / 根目录，`init` 创建后再引导补充；没有记忆硬性不往下走。写简历时从 `profile` 取姓名 / 联系方式填 self-intro；`target list` 看在投哪几岗，生成 / 换岗按对应 target 的城市 / 年限 / tags 来。
 
 ### 写入记忆：独立评估 agent + 用户确认
 
 用户每次补充个人信息，**写入前先派一个独立评估 agent 判断「值不值得记」**（独立上下文、避免自评偏袒），再由用户确认才写：
 
-- 工具：**Agent**（subagent_type: `general-purpose`）。
-- 传给它：用户的新描述 + 相关已有记忆（先 `memory.py find`）+ 目标岗位方向。
-- 它按四条评估：①硬 / 软实力（硬优先）②长期价值（跨岗位有用才记）③岗位核心方向（核心才记并打标签）④是否过时（与已有冲突 / 陈旧 → 建议更新而非新增）。
-- 它输出：是否值得记 + 记成什么（ability / project、key、category、tags、long_term）+ 理由。
+- 用你当前环境里「创建子 agent」的方式，起一个**独立上下文**的评估 agent——**具体调用哪个工具不在本规则里固定**（不同 Agent 平台机制不同，由 LLM 自行选用），目的是拿到一个不带自评偏袒的独立判断。
+- 评估标准、输入与输出格式见 [resources/memory-evaluator.md](resources/memory-evaluator.md)（四条：硬/软实力、长期价值、岗位核心、是否过时；外加防过度包装、数字待确认等把关）。
 - **评估通过且用户确认后**，才调 `memory.py add` / `update`；不通过就告诉用户为什么不记。
 
-> 脚本写入前会自动备份 `memory.json.bak`；但记忆不可撤回，仍以「评估 agent + 用户确认」双保险为准。
+> 脚本写入前会自动备份（带时间戳，保留最近 10 份）；但记忆不可撤回，仍以「评估 agent + 用户确认」双保险为准。
 
 ## 简历格式
 
@@ -91,4 +82,4 @@ meta: GPA 3.9/4.0 · 排名 1/60
 
 ## 源文档 → 简历素材
 
-用户给 `.docx` / `.pdf` 旧简历：`pandoc` / 抽文本 → 重排成上面格式当素材；要写入记忆走「评估 + 确认」。
+用户给 `.docx` / `.pdf` 旧简历：先转成纯文本（可用 pandoc 或环境里的文档转换方式）→ 重排成上面格式 → 写到 `resume/{姓名}/{求职岗位}/简历.md`（自动建目录）。若要写入记忆走「评估 + 确认」。

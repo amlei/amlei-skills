@@ -1,23 +1,7 @@
 #!/usr/bin/env python3
 """把渲染好的简历正文（<style> + 原子）包进带「导出 PDF」工具条的 A4 预览页。
 
-渲染器是 LLM：它读 references/theme-{id}.md 的组件库，把简历 MD 装配成一段
-HTML 产物——开头是主题的 <style>，后面是各原子（header / sec-head / entry …）。
-本脚本只做**主题无关**的机械包装：
-
-  · 产物开头的 <style>     → 注入预览外壳 <head> 的 <!--RESUME_STYLE-->
-  · 其余原子               → 注入 #source 的 <!--RESUME_BODY-->
-  · {{TITLE}}              → 用姓名（或文件名）填充
-
-按钮 / 分页 JS / 打印规则都在外壳里，不在正文里——所以导出的 A4 / PDF 不含
-工具条，干净可用。本脚本**不认识主题**，换主题无需改这里。
-
-用法:
-    wrap_preview.py <resume-body.html> [output.html]
-    wrap_preview.py <resume-body.html> --name "张昀-PhD申请"   # 仅覆盖 document.title（PDF 默认文件名）
-默认输出 resume/<姓名>/<求职岗位>/预览.html（自动建目录；证件照/简历 MD 也放该目录）。
-
-运行：python3 scripts/wrap_preview.py ...   或   uv run python scripts/wrap_preview.py ...
+主题无关的机械包装：产物开头的 <style> 注入外壳 <head>、其余原子注入 #source；姓名 / 岗位自动抽取做文件名与 document.title。按钮 / 分页 JS / 打印规则都在外壳里——导出的 A4 / PDF 不含工具条。默认输出 resume/<姓名>/<求职岗位>/预览.html（自动建目录）。
 """
 
 import argparse

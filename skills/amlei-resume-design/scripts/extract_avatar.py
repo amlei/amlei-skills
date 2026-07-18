@@ -1,24 +1,12 @@
 #!/usr/bin/env python3
-"""从 PDF / DOCX 简历里抽出证件照（嵌图里**含人脸**的那张），存成 PNG。
+"""从 PDF / DOCX 简历抽证件照（嵌图里含人脸的那张），存成 PNG。
 
-用 OpenCV 5 的 CNN 人脸检测（YuNet, `cv2.FaceDetectorYN`）判定：只保留
-**检测到人脸**的候选图，从而稳准分辨"证件照"与"装饰图标 / Logo"。YuNet 模型
-**首次使用时自动下载**到本地缓存（`~/.cache/resume-design/`），之后离线可用。
+用 CNN 人脸检测（YuNet）只保留检测到人脸的候选图，分辨"证件照" vs "图标 / Logo"；模型首次自动下载到本地缓存。PDF / DOCX 都只看第 1 页；多张含人脸取最大；没有就报错退出（让用户提供）。
 
-- PDF：只看**第 1 页**（证件照都在首页）的嵌图。
-- DOCX：只看**第 1 页**（第一个分页符之前）的嵌图。
-- 多张含人脸时取**最大**那张；没有含人脸的就报错退出（让用户单独提供照片）。
-
-用法:
-    extract_avatar.py <简历.pdf|简历.docx> <输出.png>
-
-依赖：pymupdf + opencv-python-headless（含 numpy）。用 uv 跑（无需全局装）：
-    uv run --no-project --with pymupdf --with opencv-python-headless \\
-        python scripts/extract_avatar.py 简历.pdf 证件照.png
-
-退出码: 0 = 抽到含人脸的证件照；1 = 没找到（让用户提供）；2 = 用法错。
+退出码：0 抽到；1 没找到。
 """
 
+import argparse
 import os
 import re
 import sys
@@ -118,10 +106,11 @@ def _candidates_docx(path):
 
 
 def main():
-    if len(sys.argv) < 3:
-        print("用法: extract_avatar.py <简历.pdf|简历.docx> <输出.png>")
-        sys.exit(2)
-    src, out = sys.argv[1], sys.argv[2]
+    ap = argparse.ArgumentParser(description="从 PDF / DOCX 简历抽出证件照（CNN 人脸检测，只保留含人脸的图）。")
+    ap.add_argument("src", help="简历 .pdf / .docx")
+    ap.add_argument("out", help="输出 .png 路径")
+    args = ap.parse_args()
+    src, out = args.src, args.out
     model = _model_path()
     ext = os.path.splitext(src)[1].lower()
     if ext == ".pdf":

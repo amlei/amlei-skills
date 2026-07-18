@@ -1,20 +1,5 @@
 #!/usr/bin/env python3
-"""简历格式校验器（确定性兜底）。
-
-两种模式，按扩展名自动判断：
-
-  · .md  —— 校验简历 MD 格式（self-intro 首模块 / 必填字段 / 标题层级 / 空模块 …）
-  · 其它 —— 校验渲染产物 HTML（无残留 {{占位符}} / 有 Header / 有分节 …）
-
-退出码: 1 = 有 ERROR；0 = 通过（可能有 WARNING，打印但不致命）。
-
-用法:
-    validate_resume.py 简历.md
-    validate_resume.py 渲染产物.html
-    validate_resume.py --md  < 简历.md        # 强制按 MD，支持标准输入
-    validate_resume.py --html < 产物.html      # 强制按 HTML，支持标准输入
-
-运行：python3 scripts/validate_resume.py ...   或   uv run python scripts/validate_resume.py ...
+"""简历格式校验器（确定性兜底）。按扩展名自动判断：.md 校验简历 MD 格式（self-intro 首模块 / 必填字段 / 标题层级 / 空模块）；.html 校验渲染产物（无残留 {{占位符}} / 有 Header / 有分节）。退出码：1 = 有 ERROR；0 = 通过。
 """
 
 import argparse

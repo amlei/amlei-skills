@@ -56,18 +56,11 @@ argument-hint: "[目标岗位或主题] [简历.md 路径]"
 
 ### 5. 校验
 
-```bash
-python3 scripts/validate_resume.py 产物.html
-python3 scripts/validate_resume.py 简历.md      # 也可先校验 MD 格式
-```
-
-ERROR 清零才算完成（最常见是残留 `{{占位符}}`，详见「易错点」）。
+用 `scripts/validate_resume.py`（`--help` 看参数；可校验产物 HTML 或简历 MD）。ERROR 清零才算完成（最常见是残留 `{{占位符}}`，详见「易错点」）。
 
 ### 6. 套预览壳
 
-```bash
-python3 scripts/wrap_preview.py 产物.html
-```
+用 `scripts/wrap_preview.py`（`--help` 看参数）。
 
 产出 `resume/{姓名}/{求职岗位}/预览.html`（自动建目录，带「导出 PDF」工具条 + A4 自动分页，浏览器打开即可导出）。姓名 / 岗位从产物自动抽取，`document.title` = `姓名-岗位`（=「另存为 PDF」默认文件名）；用 `--name` 覆盖。
 
@@ -79,7 +72,7 @@ python3 scripts/wrap_preview.py 产物.html
 
 ## 头像 / 证件照
 
-证件照用 `python3 scripts/extract_avatar.py 简历.pdf 证件照.png`（也支持 `.docx`）从源文件抽取；抽不到（源文件没嵌照片）脚本会报错，让用户提供。抽到后放进产物目录 `resume/{姓名}/{求职岗位}/`，MD 里用 `avatar:` 引用，装配时 Header 用 `<img>`（无照片用 [icons.md](references/icons.md) 占位）。
+证件照用 `scripts/extract_avatar.py`（`--help` 看用法；支持 pdf / docx）从源文件抽取；抽不到（源文件没嵌照片）脚本会报错，让用户提供。抽到后放进产物目录 `resume/{姓名}/{求职岗位}/`，MD 里用 `avatar:` 引用，装配时 Header 用 `<img>`（无照片用 [icons.md](references/icons.md) 占位）。
 
 ## 产物目录
 
