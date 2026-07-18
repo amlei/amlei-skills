@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""amlei-resume-gen 的个人能力记忆管理（KV 存储）。
+"""amlei-resume-gen 的个人资料管理（KV 存储）。
 
-记忆是简历生成的唯一能力来源，**写错不可撤回**——所以：
+个人资料是简历生成的素材库，**写错不可撤回**——所以：
   · 位置优先项目级 <cwd>/.amlei-skill/resume-gen/memory.json，
     否则用户根目录 ~/.amlei-skill/resume-gen/memory.json。
   · init 不覆盖已有；add/update/profile/target 写前自动备份**带时间戳**，保留最近 N 份。
@@ -70,7 +70,7 @@ def _save(path, data):
 def _empty():
     now = datetime.now().isoformat(timespec="seconds")
     return {"_meta": {"created": now, "last_updated": now},
-            "profile": {}, "targets": {}, "abilities": {}, "projects": {}}
+            "profile": {}, "targets": {}, "companies": {}, "abilities": {}, "projects": {}}
 
 
 def _section(data, type_):
@@ -135,6 +135,36 @@ def cmd_target(args):
         del data["targets"][args.position]
         _save(p, data)
         print(f"✓ 已移除岗位：{args.position}（写前已时间戳备份）")
+
+
+def cmd_company(args):
+    p = require()
+    data = _load(p)
+    data.setdefault("companies", {})
+    now = datetime.now().isoformat(timespec="seconds")
+    if args.action == "list":
+        if not data["companies"]:
+            print("（暂无关注公司）")
+        else:
+            for k, v in data["companies"].items():
+                jd = v.get("jd", "")[:60]
+                print(f"  · {k}  行业={v.get('industry','-')}  岗位={v.get('position','-')}  JD={jd}{'...' if len(v.get('jd','')) > 60 else ''}")
+    elif args.action == "add":
+        if not args.key:
+            print("✗ company add 需要公司名"); sys.exit(1)
+        entry = {"position": args.position or "", "industry": args.industry or "",
+                 "jd": args.jd or "", "url": args.url or "",
+                 "added": data["companies"].get(args.key, {}).get("added", now),
+                 "last_updated": now}
+        data["companies"][args.key] = entry
+        _save(p, data)
+        print(f"✓ 已添加关注公司：{args.key}（写前已时间戳备份）")
+    elif args.action == "rm":
+        if args.key not in data["companies"]:
+            print(f"✗ 没有这家公司：{args.key}"); sys.exit(1)
+        del data["companies"][args.key]
+        _save(p, data)
+        print(f"✓ 已移除公司：{args.key}（写前已时间戳备份）")
 
 
 def _age(iso):
@@ -253,6 +283,12 @@ def main():
     s.add_argument("position", nargs="?")
     s.add_argument("--city"); s.add_argument("--years"); s.add_argument("--tags")
     s.set_defaults(func=cmd_target)
+
+    s = sub.add_parser("company")
+    s.add_argument("action", choices=["add", "list", "rm"])
+    s.add_argument("--key"); s.add_argument("--position"); s.add_argument("--industry")
+    s.add_argument("--jd"); s.add_argument("--url")
+    s.set_defaults(func=cmd_company)
 
     s = sub.add_parser("time"); s.add_argument("--key"); s.set_defaults(func=cmd_time)
 

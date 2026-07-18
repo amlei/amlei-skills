@@ -43,7 +43,11 @@ argument-hint: "[目标岗位或主题] [简历.md 路径]"
 
 `name:` 必填；`avatar:` 给照片相对路径。完整范例：[sample-resume.md](assets/sample-resume.md)。
 
-### 4. 装配 HTML
+### 4. 校验
+
+用 `scripts/validate_resume.py <简历.md>` 校验，ERROR 清零才算通过。校验不过不往下装配 HTML。脚本校验项：self-intro 首模块 / name 必填 / 标题层级 / 空模块 / date 格式。
+
+### 5. 装配 HTML
 
 按主题库的简历骨架装配：主题 `<style>`（整段照抄）放最前，再依次放各原子——
 
@@ -53,10 +57,6 @@ argument-hint: "[目标岗位或主题] [简历.md 路径]"
 4. 行内强调：`**词**` → 强调字色；关键数字 / 术语 → 主题的等宽强调（如 `<span class="num">`）。
 
 产物 = `<style>…</style>` + 各原子，**不要**包 `<!DOCTYPE>/<html>/<head>/<body>`（预览壳负责）。
-
-### 5. 校验
-
-用 `scripts/validate_resume.py`（`--help` 看参数；可校验产物 HTML 或简历 MD）。ERROR 清零才算完成（最常见是残留 `{{占位符}}`，详见「易错点」）。
 
 ### 6. 套预览壳
 
@@ -69,10 +69,6 @@ argument-hint: "[目标岗位或主题] [简历.md 路径]"
 打开 `resume/{姓名}/{求职岗位}/预览.html` →「导出 PDF」→ 浏览器选「另存为 PDF」即得 A4 简历（工具条打印时自动隐藏），PDF 默认文件名 = `姓名-岗位`。换主题：回第 1 步重选，重新装配 + 校验 + 套壳即可，外壳 / 脚本不变。
 
 参考产物：[sample-preview.html](assets/sample-preview.html)（academic 主题渲染 sample-resume.md 的结果）。
-
-## 头像 / 证件照
-
-证件照用 `scripts/extract_avatar.py`（`--help` 看用法；支持 pdf / docx）从源文件抽取；抽不到（源文件没嵌照片）脚本会报错，让用户提供。抽到后放进产物目录 `resume/{姓名}/{求职岗位}/`，MD 里用 `avatar:` 引用，装配时 Header 用 `<img>`（无照片用 [icons.md](references/icons.md) 占位）。
 
 ## 产物目录
 
