@@ -1,6 +1,6 @@
 .DS_Store
 idea/
-resume/
+# resume/
 
 test/
 
@@ -14,3 +14,4 @@ boss_state.json
 .agents/
 
 __pycache__/
+.playwright-cli/

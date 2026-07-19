@@ -63,3 +63,7 @@ npm-published Claude Code plugin — **4 user-authored skills**, personal resume
 
 - Do NOT commit/sync `.opencode/`, `.claude/`, `.amlei-skill/`, or `test/` (gitignored)
 - Do NOT commit `.docx` or `.pdf` files
+
+## npm publish
+
+Every push to `main` triggers an `npm publish` to update the published package. Bump version in `package.json` before pushing if changes should ship.
