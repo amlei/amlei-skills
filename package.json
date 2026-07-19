@@ -1,0 +1,29 @@
+{
+  "name": "amlei-skills",
+  "version": "1.0.1",
+  "description": "简历全流程 + Boss直聘搜岗 + 故事生成 + Git 工作流 — Claude Code skills",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [
+    "claude-code",
+    "claude",
+    "skills",
+    "resume",
+    "boss-zhipin",
+    "求职"
+  ],
+  "files": [
+    ".claude-plugin/plugin.json",
+    ".opencode/skills/amlei-resume/SKILL.md",
+    ".opencode/skills/amlei-resume/assets/",
+    ".opencode/skills/amlei-resume/references/",
+    ".opencode/skills/amlei-resume/scripts/",
+    "skills/amlei-story-generator/"
+  ],
+  "author": "amlei",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amlei/amlei-skills.git"
+  }
+}

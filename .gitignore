@@ -11,3 +11,6 @@ boss_state.json
 *.docx
 *.pdf
 .amlei-skill/
+.agents/
+
+__pycache__/
