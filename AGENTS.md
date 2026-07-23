@@ -6,10 +6,10 @@ npm-published Claude Code plugin — **4 user-authored skills**, personal resume
 
 | Skill | Path | Key scripts |
 |-------|------|-------------|
-| amlei-resume | `skills/amlei-resume/` | `scripts/boss_zhipin.py`, `extract_avatar.py`, `profile.py`, `validate_resume.py`, `wrap_preview.py` |
+| amlei-resume | `skills/amlei-resume/` | `scripts/boss_zhipin.py`, `extract_avatar.py`, `profile.py`, `wrap_preview.py` |
 | amlei-story-generator | `skills/amlei-story-generator/` | — |
 | amlei-git-gh | `skills/amlei-git-gh/SKILL.md` | — |
-| academic-ref-retrieval | `skills/academic-ref-retrieval/` | `resources/arxiv-api-example.py`, `cnki-scraper-example.py` |
+| amlei-academic-ref-retrieval | `skills/amlei-academic-ref-retrieval/` | `resources/arxiv-api-example.py`, `cnki-scraper-example.py` |
 
 ## Publishing
 
@@ -24,7 +24,7 @@ npm-published Claude Code plugin — **4 user-authored skills**, personal resume
 ## Python scripts quirks
 
 - `boss_zhipin.py` uses **CloakBrowser Python SDK** (dep in `.opencode/package.json`) — login state persisted in `.amlei-skill/resume-gen/boss_state.json`
-- `validate_resume.py` + `wrap_preview.py` — resume markdown → HTML pipeline
+- `wrap_preview.py` — resume markdown → HTML preview shell
 - `profile.py` — personal data store (read/write with confirmation)
 - Run scripts from repo root; `boss_zhipin.py` expects `cwd`-relative `.amlei-skill/` dir
 
@@ -40,7 +40,7 @@ npm-published Claude Code plugin — **4 user-authored skills**, personal resume
 1. Check existing `resume/{name}/{role}/简历.md` → import old docx/pdf via `markitdown`
 2. Save JD to `resume/{name}/{role}/jd.md`
 3. Web search for role positioning and comparable JD requirements
-4. Write/revise resume markdown → `validate_resume.py` → `wrap_preview.py` → browser preview → export PDF
+4. Write/revise resume markdown → `wrap_preview.py` → browser preview → export PDF
 
 ## Stale CLAUDE.md
 
@@ -54,8 +54,9 @@ npm-published Claude Code plugin — **4 user-authored skills**, personal resume
 - `.opencode/skills/` are OpenCode built-in skills (gitignored)
 - `.claude/` is gitignored
 
-## SKILL.md validation and discussion
+## SKILL.md naming and conventions
 
+- All owned skills in `skills/` **must** use the `amlei-{}` prefix for their directory and SKILL name (e.g. `amlei-resume`, `amlei-story-generator`).
 - After modifying any `SKILL.md`, run `skills-ref validate <skill-dir>` to check frontmatter legality and naming conventions.
 - When the user asks questions or discusses changes to any `SKILL.md` — do NOT edit the file. Only read and answer. Edits require explicit user confirmation ("go ahead", "write it", etc.).
 

@@ -1,8 +1,6 @@
 ---
 name: amlei-git-gh
 description: Guide for git commit, push, and PR using gh CLI (GitHub). Use when committing code, pushing to remote, creating pull requests, managing branches, or any git workflow. Covers commit message conventions, push strategies, and PR creation with confirmation gates.
-argument-hint: "[回车=commit&push] 1=staged files 2=unstaged files"
-disable-model-invocation: true
 ---
 # Git & GitHub Workflow
 Use `gh` CLI (GitHub) for all remote operations. Commit and push directly without confirmation. Only PR requires explicit user approval.

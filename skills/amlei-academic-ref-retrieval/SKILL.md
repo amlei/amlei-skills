@@ -1,7 +1,6 @@
 ---
-name: academic-ref-retrieval
+name: amlei-academic-ref-retrieval
 description: 学术论文参考文献检索与格式输出。根据论文主题拆解核心技术，编写脚从权威期刊/数据库(知网、维普、arXiv等)爬取或提取真实论文信息，按标准参考文献格式输出。触发：写论文 / 参考文献 / 查文献 / 检索论文 / 论文参考 / reference retrieval / academic reference。
-argument-hint: "USER_DEFINE DIRECTION THEME ENGLISH_PAPER_NUMBER COUNT_NUMBER"
 ---
 
 # Academic Reference Retrieval
