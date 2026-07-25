@@ -59,6 +59,7 @@ npm-published Claude Code plugin — **4 user-authored skills**, personal resume
 - All owned skills in `skills/` **must** use the `amlei-{}` prefix for their directory and SKILL name (e.g. `amlei-resume`, `amlei-story-generator`).
 - After modifying any `SKILL.md`, run `skills-ref validate <skill-dir>` to check frontmatter legality and naming conventions.
 - When the user asks questions or discusses changes to any `SKILL.md` — do NOT edit the file. Only read and answer. Edits require explicit user confirmation ("go ahead", "write it", etc.).
+- **SKILL 与 reference 职责分离，不重复**：触发条件 / 工作流步骤 / "何时做、做什么"只在 `SKILL.md` 写一次；`references/*.md` 只写"怎么做"的详细方法论（公式 / 范式 / 规范 / 示例），开头不复述 SKILL 已有的触发指令（如"定稿后不要直接结束——…"这种）。reference 是 SKILL 的展开，不是复述。
 
 ## Git rules for this repo
 
