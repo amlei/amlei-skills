@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>{{title}}</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=Inter:wght@400;500&family=Space+Mono:wght@400;700&family=Noto+Sans+SC:wght@500;700;900&display=swap');
+
+{{callouts}}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:#f4f5f0;
+  font-family:"Inter","Noto Sans SC","PingFang SC",-apple-system,sans-serif;
+  color:#161922;
+  font-size:15.5px;
+  line-height:1.72;
+  padding:30px 20px 38px;
+  -webkit-text-size-adjust:100%;
+}
+body::before{
+  content:"";
+  position:fixed;inset:0;
+  background-image:radial-gradient(circle,rgba(45,76,184,.055) 1px,transparent 1.5px);
+  background-size:5px 5px;
+  pointer-events:none;
+  z-index:0;
+}
+.riso{position:relative;z-index:1;}
+
+h1{
+  font-family:"Archivo","Noto Sans SC",sans-serif;
+  font-weight:900;
+  font-size:30px;
+  line-height:1.12;
+  letter-spacing:-0.02em;
+  text-transform:uppercase;
+  color:#161922;
+  text-shadow:2px 2px 0 #e8479d;
+  margin:0 0 6px;
+}
+
+h2{
+  font-family:"Archivo","Noto Sans SC",sans-serif;
+  font-weight:700;
+  font-size:18px;
+  text-transform:uppercase;
+  letter-spacing:.02em;
+  color:#161922;
+  margin:30px 0 12px;
+  display:inline-block;
+  padding:0 0 3px 0;
+  border-bottom:2px solid #2d4cb8;
+}
+
+h3{font-family:"Archivo",sans-serif;font-weight:700;font-size:15px;color:#2d4cb8;margin:18px 0 8px;text-transform:uppercase;}
+p{margin:12px 0;}
+strong{color:#161922;font-weight:700;background:rgba(232,71,157,.16);padding:0 2px;}
+em{color:#2d4cb8;}
+
+a{color:#2d4cb8;text-decoration:underline;text-decoration-color:#e8479d;text-decoration-thickness:1.5px;text-underline-offset:2px;}
+
+code{
+  font-family:"Space Mono",monospace;
+  font-size:.84em;
+  font-weight:400;
+  color:#161922;
+  background:#fff;
+  border:1px solid #161922;
+  padding:1px 5px;
+  border-radius:0;
+  word-break:break-word;
+}
+pre{
+  background:#161922;
+  color:#f4f5f0;
+  border:1px solid #161922;
+  box-shadow:3px 3px 0 #2d4cb8;
+  padding:14px 16px;
+  margin:18px 0;
+  white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere;
+}
+pre code{background:transparent;border:none;color:#f4f5f0;padding:0;font-size:12.5px;line-height:1.6;}
+
+blockquote{
+  margin:18px 0;
+  padding:10px 16px;
+  border-left:3px solid #e8479d;
+  background:rgba(45,76,184,.07);
+  color:#161922;
+  font-weight:500;
+}
+
+ul,ol{padding-left:22px;margin:12px 0;}
+li{margin:5px 0;}
+li::marker{color:#2d4cb8;}
+
+hr{border:none;border-top:2px solid #161922;margin:26px 0;}
+
+table{border-collapse:collapse;width:100%;margin:16px 0;font-size:14px;}
+th,td{border:1px solid #161922;padding:7px 10px;text-align:left;background:#fff;}
+th{background:#2d4cb8;color:#fff;font-weight:700;text-transform:uppercase;letter-spacing:.04em;}
+
+img{max-width:100%;height:auto;border:1px solid #161922;}
+</style>
+</head>
+<body>
+<div class="riso">
+{{body}}
+</div>
+</body>
+</html>

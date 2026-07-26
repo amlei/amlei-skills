@@ -1,0 +1,31 @@
+/* typed callouts — GitHub-style alerts: [!NOTE] [!TIP] [!IMPORTANT] [!WARNING] [!CAUTION]
+   Icons via mask + background-color; palette tuned for LIGHT themes. */
+
+.note{--c:#1d4ed8;--bg:rgba(29,78,216,.08);--ico:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2724%27%20height%3D%2724%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M12%2022c5.523%200%2010-4.477%2010-10S17.523%202%2012%202%202%206.477%202%2012s4.477%2010%2010%2010z%22%2F%3E%3Cpath%20d%3D%22M12%2016v-4%22%2F%3E%3Cpath%20d%3D%22M12%208h.01%22%2F%3E%3C%2Fsvg%3E");}
+.tip{--c:#15803d;--bg:rgba(21,128,61,.08);--ico:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2724%27%20height%3D%2724%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M9%2018h6%22%2F%3E%3Cpath%20d%3D%22M10%2022h4%22%2F%3E%3Cpath%20d%3D%22M15.09%2014c.18-.98.65-1.74%201.41-2.5A4.65%204.65%200%200%200%2018%208%206%206%200%200%200%206%208c0%201%20.23%202.23%201.5%203.5A4.61%204.61%200%200%201%208.91%2014%22%2F%3E%3C%2Fsvg%3E");}
+.important{--c:#7c3aed;--bg:rgba(124,58,237,.08);--ico:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2724%27%20height%3D%2724%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M6%208a6%206%200%200%201%2012%200c0%207%203%209%203%209H3s3-2%203-9%22%2F%3E%3Cpath%20d%3D%22M10.3%2021a1.94%201.94%200%200%200%203.4%200%22%2F%3E%3C%2Fsvg%3E");}
+.warning{--c:#b45309;--bg:rgba(180,83,9,.09);--ico:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2724%27%20height%3D%2724%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22m21.73%2018-8-14a2%202%200%200%200-3.48%200l-8%2014A2%202%200%200%200%204%2021h16a2%202%200%200%200%201.73-3Z%22%2F%3E%3Cpath%20d%3D%22M12%209v4%22%2F%3E%3Cpath%20d%3D%22M12%2017h.01%22%2F%3E%3C%2Fsvg%3E");}
+.caution{--c:#be123c;--bg:rgba(190,18,60,.08);--ico:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2724%27%20height%3D%2724%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M7.86%202h8.28L22%207.86v8.28L16.14%2022H7.86L2%2016.14V7.86Z%22%2F%3E%3Cpath%20d%3D%22M12%208v4%22%2F%3E%3Cpath%20d%3D%22M12%2016h.01%22%2F%3E%3C%2Fsvg%3E");}
+
+.note,.tip,.important,.warning,.caution{
+  margin:16px 0;
+  padding:11px 15px;
+  border-left:2px solid var(--c);
+  background:var(--bg);
+  border-radius:0 6px 6px 0;
+}
+.note .title,.tip .title,.important .title,.warning .title,.caution .title{
+  display:flex;align-items:center;gap:7px;
+  font-weight:600;font-size:.92em;
+  color:var(--c);
+  margin-bottom:5px;
+}
+.note .title::before,.tip .title::before,.important .title::before,.warning .title::before,.caution .title::before{
+  content:"";width:15px;height:15px;flex:none;
+  background-color:var(--c);
+  -webkit-mask:var(--ico) no-repeat center/contain;
+  mask:var(--ico) no-repeat center/contain;
+}
+.note .title p,.tip .title p,.important .title p,.warning .title p,.caution .title p{margin:0;}
+.note p,.tip p,.important p,.warning p,.caution p{margin:5px 0;}
+.note>:last-child,.tip>:last-child,.important>:last-child,.warning>:last-child,.caution>:last-child{margin-bottom:0;}
