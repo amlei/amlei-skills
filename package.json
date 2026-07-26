@@ -1,6 +1,6 @@
 {
   "name": "amlei-skills",
-  "version": "0.3.0",
+  "version": "0.1.1",
   "description": "可复用 utility skill 集合（润色 / 信息分析 / 就业市场调研 / Git 工作流 / 故事生成 / md2img / 学术文献检索）",
   "main": "index.js",
   "scripts": {},
@@ -18,8 +18,6 @@
     "skills/amlei-git-gh/",
     "skills/amlei-academic-ref-retrieval/",
     "skills/amlei-info-analyze/",
-    "skills/amlei-text-polish/",
-    "skills/amlei-job-market-research/",
     "skills/amlei-md2img/"
   ],
   "author": "amlei",

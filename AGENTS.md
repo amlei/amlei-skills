@@ -8,17 +8,11 @@ npm-published Claude Code plugin — **reusable utility skills only**（不放�
 
 | Skill | Path | 用途 |
 |-------|------|------|
-| amlei-text-polish | `skills/amlei-text-polish/` | 文本润色（被 resume 工作流作为 subagent 调用）|
 | amlei-info-analyze | `skills/amlei-info-analyze/` | 已收集信息的结构化分析 |
-| amlei-job-market-research | `skills/amlei-job-market-research/` | 就业市场调研（被 resume 工作流调用）|
 | amlei-git-gh | `skills/amlei-git-gh/SKILL.md` | Git commit / push / PR 工作流 |
 | amlei-story-generator | `skills/amlei-story-generator/` | 故事 / 长文生成 |
 | amlei-md2img | `skills/amlei-md2img/` | markdown → 图片 |
 | amlei-academic-ref-retrieval | `skills/amlei-academic-ref-retrieval/` | 学术文献检索（arXiv / CNKI）|
-
-## Relationship to amlei-resume
-
-`amlei-text-polish`、`amlei-job-market-research` 是 [amlei/amlei-resume](https://github.com/amlei/amlei-resume) 简历工作流的 **companion utility**：要用满简历全流程，两个 plugin（`amlei-skills` + `amlei-resume`）都装。依赖方向：resume 产品 → utility skill（utility 不反向依赖 resume）。
 
 ## Publishing
 
