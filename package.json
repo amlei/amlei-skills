@@ -1,6 +1,6 @@
 {
   "name": "amlei-skills",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "简历全流程 + Boss直聘搜岗 + 故事生成 + Git 工作流 — Claude Code skills",
   "main": "index.js",
   "scripts": {},
@@ -27,7 +27,8 @@
     "skills/amlei-academic-ref-retrieval/",
     "skills/amlei-info-analyze/",
     "skills/amlei-text-polish/",
-    "skills/amlei-job-market-research/"
+    "skills/amlei-job-market-research/",
+    "skills/amlei-md2img/"
   ],
   "author": "amlei",
   "license": "MIT",
