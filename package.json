@@ -1,27 +1,19 @@
 {
   "name": "amlei-skills",
-  "version": "0.2.0",
-  "description": "简历全流程 + Boss直聘搜岗 + 故事生成 + Git 工作流 — Claude Code skills",
+  "version": "0.3.0",
+  "description": "可复用 utility skill 集合（润色 / 信息分析 / 就业市场调研 / Git 工作流 / 故事生成 / md2img / 学术文献检索）",
   "main": "index.js",
   "scripts": {},
   "keywords": [
     "claude-code",
     "claude",
     "skills",
-    "resume",
-    "boss-zhipin",
-    "求职"
+    "utility",
+    "text-polish",
+    "git"
   ],
   "files": [
     ".claude-plugin/plugin.json",
-    "skills/amlei-resume/SKILL.md",
-    "skills/amlei-resume/assets/",
-    "skills/amlei-resume/references/",
-    "skills/amlei-resume/scripts/boss_zhipin.py",
-    "skills/amlei-resume/scripts/extract_avatar.py",
-    "skills/amlei-resume/scripts/profile.py",
-    "skills/amlei-resume/scripts/wrap_preview.py",
-    "skills/amlei-resume/scripts/export_long_image.py",
     "skills/amlei-story-generator/",
     "skills/amlei-git-gh/",
     "skills/amlei-academic-ref-retrieval/",
