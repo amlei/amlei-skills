@@ -13,6 +13,7 @@ npm-published Claude Code plugin — **reusable utility skills only**（不放�
 | amlei-story-generator | `skills/amlei-story-generator/` | 故事 / 长文生成 |
 | amlei-md2img | `skills/amlei-md2img/` | markdown → 图片 |
 | amlei-academic-ref-retrieval | `skills/amlei-academic-ref-retrieval/` | 学术文献检索（arXiv / CNKI）|
+| amlei-podcast-outline | `skills/amlei-podcast-outline/` | 播客大纲制作（通读全书+联网搜索+分段口播大纲）|
 
 ## Publishing
 
