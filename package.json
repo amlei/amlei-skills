@@ -18,7 +18,8 @@
     "skills/amlei-git-gh/",
     "skills/amlei-academic-ref-retrieval/",
     "skills/amlei-info-analyze/",
-    "skills/amlei-md2img/"
+    "skills/amlei-md2img/",
+    "skills/amlei-csdn-post/"
   ],
   "author": "amlei",
   "license": "MIT",
