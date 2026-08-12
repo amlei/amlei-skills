@@ -1,3 +1,4 @@
+csdn-post skill 更新
 ---
 name: amlei-csdn-post
 description: 把本地 Markdown 文件发布成 CSDN 博客文章。复用你【已登录的浏览器】驱动 CSDN 网页编辑器（editor.csdn.net/md/），自动在正文开头插入 @[toc] 目录、归类标签/分类专栏、填写摘要、设置可见范围，并完成发布。自适应你用的任一 Chromium 内核浏览器（Chrome/Edge/Brave/Arc/Vivaldi 等）。当用户要把 md 发到 CSDN、上传博客到 CSDN、CSDN 自动发布、发文章到 CSDN、CSDN 发帖、把笔记/文章同步到 CSDN、csdn post/publish 时使用——哪怕用户没明说"CSDN"，只要意图是"把这篇 md 发到中文技术博客平台"就该用它。
@@ -59,6 +60,8 @@ CSDN 没有公开稳定的发文 API，后台接口还有加密签名，逆向�
 
 > 专栏（分类）在 CSDN 里是用户**预先创建**的容器，不是自由标签。如果你没把握用户有哪些专栏，**先跑 `--list-columns`**，从真实列表里选最贴的；一个都贴不上就空着（专栏是可选的），别硬选。
 
+> **关键流程前提**：标签、分类专栏、摘要、可见范围这些控件**都在点「发布文章」之后弹出的发布弹窗里**，点之前页面上不存在。所以无论是脚本还是人工排查，都必须先把发布弹窗打开，才能定位/点选分类专栏。`--list-columns` 的内部流程就是：打开编辑器 → 点「发布文章」打开弹窗 → 点「新建分类专栏」打开专栏面板 → 列出已有专栏。
+
 ### 第 3 步：正文加目录
 
 CSDN 的 Markdown 编辑器支持 `@[toc]` 标记——在正文里单独一行写 `@[toc]`，会**自动根据各级标题生成可点击的目录**。脚本默认把 `@[toc]` 插到正文最前面（已有则不重复）。
@@ -73,6 +76,8 @@ CSDN 的 Markdown 编辑器支持 `@[toc]` 标记——在正文里单独一行�
 > 开关要用户自己在浏览器里勾（是浏览器的安全放行）。提示用 `! open -a "Microsoft Edge" "edge://inspect/#remote-debugging"`（Chrome 换 `"Google Chrome"` + `chrome://inspect`，Brave 换 `Brave Browser` + `brave://inspect`）在会话里直接打开该页更顺。
 
 ### 第 5 步：发布
+
+脚本完整流程：打开编辑器 → 导入 md（文件名即标题）→ 点「发布文章」打开发布弹窗 → 在弹窗内填标签/摘要/分类专栏/可见范围 → 再点弹窗内的「发布文章」按钮正式发布。
 
 ```bash
 # 用仓库 .venv（也可换系统 python，需已装 playwright + pyperclip）
@@ -110,6 +115,9 @@ CSDN 的 Markdown 编辑器支持 `@[toc]` 标记——在正文里单独一行�
 | 编辑器一直没出现（登录超时） | 该浏览器未登录 CSDN。在窗口里手动登录后重跑；或加大 `--login-wait`。 |
 | 正文没灌进去 / 是空的 | 脚本靠编辑器的"导入 Markdown"文件输入（`#import-markdown-file-input`）灌正文；若失败多半是 CSDN 改版换了入口，改脚本对应选择器即可。 |
 | `找不到分类专栏「X」` | 专栏名要和 CSDN 后台完全一致；先 `--list-columns` 看真实名称再填。 |
+| 定位不到「分类专栏/标签/摘要/可见范围」控件 | 这些控件在点「发布文章」后弹出的发布弹窗里，页面上先只有「发布文章」按钮；先打开弹窗再定位 `.modal__publish-article` 内的控件。`--list-columns` 已封装该流程。 |
+| 点「发布文章」后弹窗没出现 | CSDN 改版后按钮可能被覆盖层拦截，普通 click 不生效。 | 改用 force 点击打开弹窗（`page.locator(...).click(force=True)`），脚本 `open_dialog` 已按此修复。 |
+| 「添加文章标签」按钮找不到 | 旧选择器依赖父容器 `mark_selection`，CSDN 改版后失效。 | 改为直接定位按钮 `.tag__btn-tag`：`//button[contains(@class,"tag__btn-tag") and contains(normalize-space(.),"添加文章标签")]`，脚本 `SEL["add_tag"]` 已按此修复。 |
 | 某个选择器报错（点不动按钮） | CSDN 改版了。F12 开 DevTools，用元素选择器点中目标控件，找个稳定特征（id / placeholder / class 片段），在 Console 用 `$x('xpath')` 或 `$$('css')` 验证能唯一命中，再改 `scripts/csdn_publish.py` 顶部的 `SEL` 字典对应那一项即可——选择器是脚本的唯一事实源。 |
 | 发布后没拿到 URL | 看浏览器是否跳转到文章页；脚本会兜底返回当前页 URL，人工核对一下。 |
 
