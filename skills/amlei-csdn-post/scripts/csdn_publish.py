@@ -414,7 +414,7 @@ def main():
     ap.add_argument("--column", action="append", help="分类专栏名称（弹窗里点选，须账号已有）")
     ap.add_argument("--summary", help="摘要")
     ap.add_argument("--cover", help="封面图片本地路径或 URL")
-    ap.add_argument("--visibility", default="仅我可见", help="全部可见/仅我可见/粉丝可见/VIP可见，默认「仅我可见」(私密)")
+    ap.add_argument("--visibility", default="全部可见", help="全部可见/仅我可见/粉丝可见/VIP可见，默认「全部可见」(公开)")
     ap.add_argument("--toc", dest="toc", action="store_true", default=True, help="正文开头插 @[toc] 目录（默认开）")
     ap.add_argument("--no-toc", dest="toc", action="store_false", help="不插 @[toc]")
     ap.add_argument("--auto-publish", "--yes", dest="auto_publish", action="store_true", help="跳过确认直接发布")
@@ -446,7 +446,7 @@ def main():
         cols = args.column or (fm.get("categories") if isinstance(fm.get("categories"), list) else None)
         summary = args.summary or fm.get("description") or fm.get("summary")
         cover = args.cover or fm.get("image") or fm.get("cover")
-        visibility = args.visibility or fm.get("visibility") or "仅我可见"
+        visibility = args.visibility or fm.get("visibility") or "全部可见"
 
         page = ctx.new_page()
         open_editor_and_login(page, args.login_wait)
