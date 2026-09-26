@@ -15,6 +15,7 @@ npm-published Claude Code plugin — **reusable utility skills only**（不放�
 | amlei-academic-ref-retrieval | `skills/amlei-academic-ref-retrieval/` | 学术文献检索（arXiv / CNKI）|
 | amlei-podcast-outline | `skills/amlei-podcast-outline/` | 播客大纲制作（通读全书+联网搜索+分段口播大纲）|
 | amlei-industry-master | `skills/amlei-industry-master/` | 宏观产业研究全闭环（信号触发·定向深挖·源文件交叉验证，含经济杠杆诊断/四流验证/传导图谱）|
+| amlei-web-image-gen | `skills/amlei-web-image-gen/` | 网页版 AI 生图（豆包 doubao，克隆 profile 复用登录态，单会话批量出图）|
 
 ## Publishing
 

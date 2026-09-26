@@ -16,3 +16,7 @@ boss_state.json
 
 __pycache__/
 .playwright-cli/
+
+node_modules/
+
+package-lock.json

@@ -13,6 +13,7 @@
     "git"
   ],
   "files": [
+    "packages/baoyu-chrome-cdp/",
     ".claude-plugin/plugin.json",
     "skills/amlei-story-generator/",
     "skills/amlei-git-gh/",
@@ -20,7 +21,8 @@
     "skills/amlei-info-analyze/",
     "skills/amlei-md2img/",
     "skills/amlei-csdn-post/",
-    "skills/amlei-industry-master/"
+    "skills/amlei-industry-master/",
+    "skills/amlei-web-image-gen/"
   ],
   "author": "amlei",
   "license": "MIT",
