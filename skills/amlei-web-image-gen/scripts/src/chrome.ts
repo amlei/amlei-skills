@@ -119,12 +119,13 @@ export async function ensureChrome(opts: { port?: number; forceRelaunch?: boolea
 }
 
 function cdpAliveSync(port: number): boolean {
-  try {
-    const out = execFileSync("curl", ["-s", "--max-time", "3", `http://127.0.0.1:${port}/json/version`], {
-      encoding: "utf8",
-    });
-    return out.includes("Browser");
-  } catch {
-    return false;
+  for (const host of ["127.0.0.1", "[::1]"]) {
+    try {
+      const out = execFileSync("curl", ["-s", "--max-time", "3", `http://${host}:${port}/json/version`], {
+        encoding: "utf8",
+      });
+      if (out.includes("Browser")) return true;
+    } catch {}
   }
+  return false;
 }

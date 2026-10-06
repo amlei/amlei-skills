@@ -1,0 +1,8 @@
+interface:
+  display_name: "Gossip Video"
+  short_description: "核实选题并制作盲字幕吃瓜视频"
+  brand_color: "#FF3366"
+  default_prompt: "Use $amlei-gossip-video to collect sourced gossip topics and build a 9:16 Chinese video."
+
+policy:
+  allow_implicit_invocation: true

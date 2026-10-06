@@ -14,6 +14,7 @@
  *
  * job 简写：--job "prompt.md=out.png" 或 --job "prompt.md=out.png:1:1"（冒号跟比例）。
  */
+import fs from "node:fs";
 import path from "node:path";
 import { chromium } from "playwright-core";
 import { ensureChrome, DEFAULT_PORT } from "./chrome.js";
@@ -90,17 +91,34 @@ async function main() {
     console.log("[stage] image session ok");
     const model = await platform.ensureModel(args.model);
     console.log(`[stage] model ok: ${model}`);
+    if (args.ratio) { try { await platform.setRatio(args.ratio); console.log(`[stage] ratio ok: ${args.ratio}`); } catch {} }
     console.log(`[model] ${model}`);
     const seen = new Set<string>(); // 会话内已见图片 URL 基线
     const results = [];
+    const failed: string[] = [];
     for (let i = 0; i < args.jobs.length; i++) {
       const job = args.jobs[i];
+      if (fs.existsSync(job.outFile) || fs.existsSync(job.outFile + ".jpg") || fs.existsSync(job.outFile + ".webp")) {
+        console.log(`[${i + 1}/${args.jobs.length}] SKIP（已存在）${path.basename(job.outFile)}`);
+        continue;
+      }
       console.log(`[${i + 1}/${args.jobs.length}] ${path.basename(job.outFile)} 生成中…`);
-      const r = await platform.generate(job, seen, args.timeout);
-      console.log(`    SAVED ${r.outFile}  ${r.width}x${r.height}  ${(r.bytes / 1024).toFixed(0)}KB`);
-      results.push(r);
+      try {
+        const r = await platform.generate(job, seen, args.timeout);
+        console.log(`    SAVED ${r.outFile}  ${r.width}x${r.height}  ${(r.bytes / 1024).toFixed(0)}KB`);
+        results.push(r);
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        console.log(`    FAILED ${job.outFile}: ${msg}`);
+        if (msg.includes("QUOTA_EXHAUSTED")) {
+          console.log(`今日免费生图额度已用完，停止本批。已完成 ${results.length} 张，剩余任务明天重跑同一命令即可续传（已生成的自动跳过）。`);
+          break;
+        }
+        failed.push(job.outFile);
+      }
     }
-    console.log("ALL DONE");
+    if (failed.length) console.log("DONE_WITH_FAILURES\n" + failed.join("\n"));
+    else console.log("ALL DONE");
     for (const r of results) console.log(r.outFile);
   } finally {
     await browser.close(); // 只断开 CDP 连接，浏览器进程保留

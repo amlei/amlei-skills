@@ -4,7 +4,7 @@
 
 一组开箱即用的 Agent Skills，覆盖内容创作、研究分析、视觉设计与 Git 工作流等场景。所有 skill 均通过 [`skills-ref`](https://agentskills.io) 校验，符合 [Agent Skills](https://agentskills.io) 开放格式。
 
-> A collection of production-ready Agent Skills: theme illustration & software logo prompt design, story generation, podcast outlines, industry research, CSDN publishing and Git workflow — compatible with Claude Code, OpenCode and any Agent Skills-compatible client.
+> A collection of production-ready Agent Skills: theme illustration & software logo prompt design, story generation, podcast outlines, industry research, web AI image generation, CSDN publishing and Git workflow — compatible with Claude Code, OpenCode and any Agent Skills-compatible client.
 
 ## Highlights
 
@@ -37,6 +37,7 @@
 | [amlei-theme-illustrator](skills/amlei-theme-illustrator/SKILL.md) | 主题插画提示词设计——从内容主题转译为场景瞬间，产出卡通 3D 风格、全正向描述的插画提示词（播客单集封面 / 文章配图 / 内容营销图）；封面设计灵感借鉴 [知行小酒馆](https://www.xiaoyuzhoufm.com/podcast/6013f9f58e2f7ee375cf4216) 播客的节目封面 |
 | [amlei-symbolist](skills/amlei-symbolist/SKILL.md) | 软件 Logo 提示词设计——从产品核心行为推演图形概念（行为转译 / 文化母语符号 / 数量精确对应 / 一形多读），遵循设计四律：中心主体、白底、颜色在主体、自成一体 |
 | [amlei-md2img](skills/amlei-md2img/SKILL.md) | Markdown 转图片长图——pandoc + Playwright 按移动端宽度整页截图，保留标题 / 代码块 / 列表样式 |
+| [amlei-web-image-gen](skills/amlei-web-image-gen/SKILL.md) | 网页版 AI 生图——豆包（doubao）克隆 profile 复用登录态，单会话批量出图，消耗账号免费额度 |
 
 ### 开发工作流
 

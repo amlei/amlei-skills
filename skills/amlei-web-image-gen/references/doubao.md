@@ -38,6 +38,15 @@
 5. **下载**：直接 `ctx.request.get(图片src)`（CDN 签名 URL，无需额外 Cookie），
    扩展名按响应 `content-type` 修正（png/jpeg/webp）。
 
+## 免费额度用尽（2026-09 实测文案）
+
+页面出现以下任意文案即代表当日免费额度耗尽，脚本抛 `QUOTA_EXHAUSTED` 并停止整批：
+
+- 「今日图片生成免费次数用完了，你明天再来找我继续吧。」
+- 「开通豆包专业版标准套餐即可使用高级创作模型，还可按需购买创作额度包…免等待继续创作。」
+
+检测点：发送后 4s、出图轮询每轮。识别函数：`doubao.ts#quotaExhaustedMessage`。
+
 ## 浏览器接入
 
 Chrome 进程管理基于本仓 `packages/baoyu-chrome-cdp`（Copy 自 JimLiu/baoyu-skills，MIT），

@@ -52,6 +52,20 @@ async function isBusy(page: Page): Promise<boolean> {
   return text.includes("生成中") || text.includes("正在生成") || text.includes("生成图片中");
 }
 
+/** 免费额度用尽的页面文案（出现即应停止整批，明天再续） */
+export function quotaExhaustedMessage(text: string): string | null {
+  if (text.includes("次数用完") || text.includes("免费次数已用完")) return "今日图片生成免费次数已用完";
+  if (text.includes("开通豆包专业版") && text.includes("创作额度")) return "免费额度用完，页面提示开通专业版/购买创作额度包";
+  if (text.includes("创作额度不足")) return "创作额度不足";
+  return null;
+}
+
+async function quotaCheck(page: Page): Promise<void> {
+  const text = await page.evaluate(() => document.body.innerText).catch(() => "");
+  const msg = quotaExhaustedMessage(text);
+  if (msg) throw new Error("QUOTA_EXHAUSTED: " + msg);
+}
+
 export function createDoubao(ctx: BrowserContext): Platform {
   const page: Page = ctx.pages().find((p) => p.url().includes("doubao.com")) ?? ctx.pages()[0];
 
@@ -97,16 +111,29 @@ export function createDoubao(ctx: BrowserContext): Platform {
     },
 
     async setRatio(ratio: string) {
-      const ratioBtn = page.getByRole("button", { name: "比例" }).first();
-      await ratioBtn.waitFor({ state: "visible", timeout: 15_000 });
-      const label = await ratioBtn.innerText();
-      if (label.replace(/\s+/g, " ").includes(ratio)) return;
-      await ratioBtn.click();
-      await page.waitForTimeout(1200);
-      await page.getByRole("button", { name: ratio, exact: true }).first().click();
-      await page.waitForTimeout(600);
-      await page.keyboard.press("Escape"); // 必须关菜单，否则浮层挡住输入框
-      await page.waitForTimeout(800);
+      // 生成结束后编辑器可能需要滚动恢复：滚动 + 多次重试
+      for (let attempt = 0; attempt < 3; attempt++) {
+        const ratioBtn = page.getByRole("button", { name: "比例" }).first();
+        const visible = await ratioBtn.isVisible().catch(() => false);
+        if (visible) {
+          const label = await ratioBtn.innerText().catch(() => "");
+          if (label.replace(/\s+/g, " ").includes(ratio)) return;
+          await ratioBtn.scrollIntoViewIfNeeded().catch(() => {});
+          await ratioBtn.click();
+          await page.waitForTimeout(1200);
+          await page.getByRole("button", { name: ratio, exact: true }).first().click();
+          await page.waitForTimeout(600);
+          await page.keyboard.press("Escape"); // 必须关菜单，否则浮层挡住输入框
+          await page.waitForTimeout(800);
+          return;
+        }
+        // 尝试唤回输入区：滚动到顶部/底部 + 点一下正文输入框
+        await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight)).catch(() => {});
+        await page.locator("div.tiptap.ProseMirror[contenteditable=true]").first().click().catch(() => {});
+        await page.waitForTimeout(2000);
+      }
+      // 生成结束后按钮可能收起；会话会保留上次比例，沿用即可（不中断出图）
+      console.log("[ratio] 「比例」按钮不可见，沿用会话当前比例");
     },
 
     async ensureModel(model?: string) {
@@ -135,6 +162,7 @@ export function createDoubao(ctx: BrowserContext): Platform {
       await page.waitForTimeout(600);
       await page.keyboard.press("Enter");
       await page.waitForTimeout(4000);
+      await quotaCheck(page);
 
       const deadline = Date.now() + timeoutMs;
       let news: Array<{ src: string; w: number; h: number }> = [];
@@ -147,6 +175,8 @@ export function createDoubao(ctx: BrowserContext): Platform {
           if (w >= 1500 && w === lastW) {
             hiStable++;
             if (hiStable >= 2 && !(await isBusy(page))) break;
+          } else if (!news.length || hiStable === 0) {
+            await quotaCheck(page);
           } else {
             hiStable = 0;
           }
