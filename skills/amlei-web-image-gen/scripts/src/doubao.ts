@@ -151,7 +151,7 @@ export function createDoubao(ctx: BrowserContext): Platform {
       return want;
     },
 
-    async generate(job: GenJob, seen: Set<string>, timeoutMs = 300_000): Promise<GenResult> {
+    async generate(job: GenJob, seen: Set<string>, timeoutMs = 300_000): Promise<GenResult[]> {
       if (job.ratio) await platform.setRatio(job.ratio);
       const prompt = stripFrontmatter(fs.readFileSync(job.promptFile, "utf8"));
 
@@ -171,7 +171,8 @@ export function createDoubao(ctx: BrowserContext): Platform {
       while (Date.now() < deadline) {
         news = (await chatImages(page)).filter((i) => !seen.has(i.src));
         if (news.length > 0) {
-          const w = Math.max(...news.map((i) => i.w));
+          // 多张图时必须全部升到高清原图（取最小宽度）且连续两次轮询不变
+          const w = Math.min(...news.map((i) => i.w));
           if (w >= 1500 && w === lastW) {
             hiStable++;
             if (hiStable >= 2 && !(await isBusy(page))) break;
@@ -187,15 +188,26 @@ export function createDoubao(ctx: BrowserContext): Platform {
       if (news.length === 0)
         throw new Error(`出图超时（${timeoutMs}ms）：${job.outFile}。可重试或检查会话页。`);
       for (const n of news) seen.add(n.src);
-      const best = news.reduce((a, b) => (a.w * a.h >= b.w * b.h ? a : b));
-      const resp = await ctx.request.get(best.src, { timeout: 60_000 });
-      const buf = await resp.body();
-      const ct = resp.headers()["content-type"] ?? "";
-      const ext = ct.includes("jpeg") || ct.includes("jpg") ? ".jpg" : ct.includes("webp") ? ".webp" : ".png";
-      const finalPath = job.outFile.endsWith(ext) ? job.outFile : job.outFile + ext;
-      fs.mkdirSync(path.dirname(finalPath), { recursive: true });
-      fs.writeFileSync(finalPath, buf);
-      return { outFile: finalPath, width: best.w, height: best.h, bytes: buf.byteLength };
+      const sorted = [...news].sort((a, b) => b.w * b.h - a.w * a.h);
+      const results = await Promise.all(
+        sorted.map(async (n, i) => {
+          const resp = await ctx.request.get(n.src, { timeout: 60_000 });
+          const buf = await resp.body();
+          const ct = resp.headers()["content-type"] ?? "";
+          const ext = ct.includes("jpeg") || ct.includes("jpg") ? ".jpg" : ct.includes("webp") ? ".webp" : ".png";
+          const stem = job.outFile.replace(/\.(png|jpe?g|webp)$/i, "");
+          const finalPath =
+            i === 0
+              ? job.outFile.endsWith(ext)
+                ? job.outFile
+                : job.outFile + ext
+              : `${stem}-${i + 1}${ext}`;
+          fs.mkdirSync(path.dirname(finalPath), { recursive: true });
+          fs.writeFileSync(finalPath, buf);
+          return { outFile: finalPath, width: n.w, height: n.h, bytes: buf.byteLength };
+        })
+      );
+      return results;
     },
   };
   return platform;

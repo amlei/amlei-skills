@@ -104,9 +104,10 @@ async function main() {
       }
       console.log(`[${i + 1}/${args.jobs.length}] ${path.basename(job.outFile)} 生成中…`);
       try {
-        const r = await platform.generate(job, seen, args.timeout);
-        console.log(`    SAVED ${r.outFile}  ${r.width}x${r.height}  ${(r.bytes / 1024).toFixed(0)}KB`);
-        results.push(r);
+        const rs = await platform.generate(job, seen, args.timeout);
+        for (const r of rs)
+          console.log(`    SAVED ${r.outFile}  ${r.width}x${r.height}  ${(r.bytes / 1024).toFixed(0)}KB`);
+        results.push(...rs);
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e);
         console.log(`    FAILED ${job.outFile}: ${msg}`);

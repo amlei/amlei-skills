@@ -26,6 +26,6 @@ export interface Platform {
   setRatio: (ratio: string) => Promise<void>;
   /** 校验/选择模型，返回实际生效的模型名。 */
   ensureModel: (model?: string) => Promise<string>;
-  /** 在当前会话发送提示词并等待出图、下载到 outFile。 */
-  generate: (job: GenJob, seen: Set<string>, timeoutMs: number) => Promise<GenResult>;
+  /** 在当前会话发送提示词并等待出图，全部新图并发下载落盘（[0] 占用 job.outFile，其余加 -N 序号）。 */
+  generate: (job: GenJob, seen: Set<string>, timeoutMs: number) => Promise<GenResult[]>;
 }
